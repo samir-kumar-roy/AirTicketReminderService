@@ -39,9 +39,40 @@ const updateTicket = async (ticketId, data) => {
     }
 }
 
+
+const createNotification = async (data) => {
+    try {
+        console.log(data);
+        const response = await ticketRepo.createTicket(data);
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const subscribeEvents = async (payload) => {
+    let service = payload.service;
+    let data = payload.data;
+    switch (service) {
+        case 'CREATE_TICKET':
+            await createNotification(data);
+            break;
+
+        case 'SEND_BASIC_EMAIL':
+            await sendBasicEmail(data);
+            break;
+
+        default:
+            console.log('No valid payload');
+            break;
+    }
+}
+
 module.exports = {
+    subscribeEvents,
     sendBasicEmail,
     fetchPendingEmails,
     createTicket,
-    updateTicket
+    updateTicket,
+    createNotification
 }
